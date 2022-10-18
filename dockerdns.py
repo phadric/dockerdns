@@ -13,8 +13,8 @@ keyDef= ("key"+QuotedString('"')("keyname")+LBRACE+Dict(ZeroOrMore(Group(keyStat
 
 keys={}
 
-domain=sys.argv[1]
-dnsserver=sys.argv[2]
+domain=sys.argv[2]
+dnsserver=sys.argv[1]
 print ("Using %s domain at %s for updates" %(domain,dnsserver))
 
 for key in keyDef.searchString(open("/keyfile").read()):
@@ -39,7 +39,7 @@ for c in client.containers.list(filters={"label":"dns","status":"running"}):
             print ("alias: ",alias,c.name)
             update.replace(alias, 300, 'CNAME', c.name)
     
-#response = dns.query.udp(update, dnsserver)
+response = dns.query.udp(update, dnsserver)
 
 for event in client.events(decode=True,filters={"type":"container","label":"dns","event":"start"}):
     c=client.containers.get(event["id"])
@@ -53,5 +53,5 @@ for event in client.events(decode=True,filters={"type":"container","label":"dns"
         for alias in c.labels["dns.alias"].split(","):
             print ("alias: ",alias,c.name)
             update.replace(alias, 300, 'CNAME', c.name)
-    #response = dns.query.udp(update, dnsserver)
+    response = dns.query.udp(update, dnsserver)
     
