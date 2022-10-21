@@ -36,8 +36,8 @@ for c in client.containers.list(filters={"label":"dns","status":"running"}):
     print ("updating: ",c.name,ip)
     if "dns.alias" in c.labels:
         for alias in c.labels["dns.alias"].split(","):
-            print ("alias: ",alias,c.name)
-            update.replace(alias, 300, 'CNAME', c.name)
+            print ("alias: ",alias,ip)
+            update.replace(alias, 300, 'a', ip)
     
 response = dns.query.udp(update, dnsserver)
 
@@ -51,7 +51,7 @@ for event in client.events(decode=True,filters={"type":"container","label":"dns"
     print ("updating: ",c.name,ip)
     if "dns.alias" in c.labels:
         for alias in c.labels["dns.alias"].split(","):
-            print ("alias: ",alias,c.name)
-            update.replace(alias, 300, 'CNAME', c.name)
+            print ("alias: ",alias,ip)
+            update.replace(alias, 300, 'a', ip)
     response = dns.query.udp(update, dnsserver)
     
